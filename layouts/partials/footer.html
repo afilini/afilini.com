@@ -1,0 +1,6 @@
+<small class="gray">
+    {{ if .IsPage }}
+        <em>Updated: {{ .Lastmod.Format .Site.Params.dateFormat }} - Version: <a href="https://github.com/afilini/afilini.com/commit/{{ .GitInfo.Hash }}">{{ .GitInfo.AbbreviatedHash }}</a></em> -
+    {{ end }}
+    &copy; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
+</small>

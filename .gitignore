@@ -1,0 +1,5 @@
+venv/
+public/
+
+*.swp
+geckodriver.log
