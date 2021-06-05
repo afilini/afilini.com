@@ -1,5 +1,6 @@
 venv/
 public/
+public-staging/
 
 *.swp
 geckodriver.log
