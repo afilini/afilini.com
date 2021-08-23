@@ -1,3 +1,8 @@
+---
+title: "Alekos Filini - @afilini"
+description: "Home page of Alekos Filini (@afilini)"
+---
+
 ### About
 
 Welcome to my website! [Here](/about) you can find some more info about myself and what I do.
