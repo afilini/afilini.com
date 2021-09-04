@@ -19,7 +19,7 @@ def get_title(url):
 
     pattern = '<title.*?>(.+?)</title>'
     result = re.findall('<title.*?>(.+?)</title>', content)
-    return result[0]
+    return "" if len(result) == 0 else result[0]
 
 if len(sys.argv) < 2:
     print('usage: {} URL [TEXT]'.format(sys.argv[0]), file=sys.stderr)
