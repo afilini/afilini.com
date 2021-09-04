@@ -1,6 +1,6 @@
 <small class="gray">
     {{ if .IsPage }}
-        <em>Updated: {{ .Lastmod.Format .Site.Params.dateFormat }} - Version: {{ if isset .GitInfo "Hash" }}<a href="https://github.com/afilini/afilini.com/commit/{{ .GitInfo.Hash }}">{{ .GitInfo.AbbreviatedHash }}</a>{{ else }}unknown{{ end }}</em> -
+        <em>Updated: {{ .Lastmod.Format .Site.Params.dateFormat }} - Version: {{ with .GitInfo }}<a href="https://github.com/afilini/afilini.com/commit/{{ .Hash }}">{{ .AbbreviatedHash }}</a>{{ else }}unknown{{ end }}</em> -
     {{ end }}
     &copy; <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a>
 </small>
