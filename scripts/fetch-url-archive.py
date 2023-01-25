@@ -10,9 +10,11 @@ import urllib.request
 
 import archiveis
 
+ua = 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0'
+
 def get_title(url):
     req = urllib.request.Request(url)
-    req.add_header('User-Agent', 'Mozilla/5.0 (X11; Fedora; Linux x86_64; rv:88.0) Gecko/20100101 Firefox/88.0')
+    req.add_header('User-Agent', ua)
     f = urllib.request.urlopen(req)
 
     content = f.read().decode('utf-8')
@@ -28,7 +30,7 @@ if len(sys.argv) < 2:
 url = sys.argv[1]
 
 title = get_title(url)
-archive_url = archiveis.capture(url).replace('/wip/', '/')
+archive_url = archiveis.capture(url, user_agent=ua).replace('/wip/', '/')
 
 note_id = ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase, k=6))
 
