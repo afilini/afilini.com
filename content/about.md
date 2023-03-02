@@ -5,11 +5,14 @@ menu = "main"
 
 ### About
 
-I'm a {{< age >}} year old developer working full time on open-source Bitcoin projects like [Bitcoin Dev Kit (BDK)](https://bitcoindevkit.org) and [Magical Bitcoin](https://github.com/MagicalBitcoin) thanks to a generous grant from [Brink](https://brink.dev).
+I'm a developer with a few years of experience working on Bitcoin open-source projects and libraries.
 
-Previously, I've worked at [Blockstream](https://blockstream.com) and [BHB Network](https://twitter.com/BHBnetwork).
+I currently work as a consultant in the Bitcoin space. If you need help with anything you can [book a meeting](/book-my-time) with me.
 
-I'm currently based in Milan, Italy.
+Previously, I started the [Bitcoin Dev Kit (BDK)](https://bitcoindevkit.org) and [Magical Bitcoin](https://github.com/MagicalBitcoin) projects, and also
+worked at [Blockstream](https://blockstream.com) and [BHB Network](https://twitter.com/BHBnetwork).
+
+I'm currently based in Brescia, Italy.
 
 ---
 
