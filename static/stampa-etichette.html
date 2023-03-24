@@ -1,34 +1,36 @@
 <html>
     <head>
         <title>Stampa Etichette</title>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
         <style type="text/css">
 body {
-  background: rgb(204,204,204);
-  display: flex;
-  justify-content: space-evenly;
+    background: rgb(204,204,204);
+    display: flex;
+    justify-content: space-evenly;
 }
 page {
-  background: white;
-  display: block;
-  box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+    background: white;
+    display: block;
+    box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+    order: 2;
 }
-page[size="A4"] {
-  width: 21cm;
-  height: 29.7cm;
+page {
+    height: 98vh;
+    width: 69.31vh;
 }
 inner {
     width: 100%;
+    height: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    align-content: start;
-    padding-top: 0.9cm;
+    align-content: center;
 }
 box {
     display: inline-block;
-    width: 9.91cm;
-    height: 13.9cm;
-    border: 1px solid black;
+    width: 47.19%;
+    height: 46.68%;
+    border: 1px dashed grey;
     border-radius: 0.3cm;
     padding: 0.3cm;
     box-sizing: border-box;
@@ -42,6 +44,9 @@ box > div {
 }
 box:nth-child(even) {
     margin-left: 0.2cm;
+}
+box:nth-child(-n+2) {
+    border-bottom: 0;
 }
 box.add {
     background-color: rgb(222, 222, 222);
@@ -63,41 +68,64 @@ box.add:hover {
 }
 #instructions {
     max-width: 25vw;
+    order: 3;
 }
-@media print {
-  body {
-    margin: 0;
-    display: initial;
-    box-shadow: 0 0 0 0;
-    -webkit-print-color-adjust:exact !important;
-    print-color-adjust:exact !important;
-  }
-  @page {
-      margin: 0;
-  }
-  box {
-      border: 0px;
-  }
-  box.add {
-      background: rgba(0, 0, 0, 0) !important;
-  }
-  box.add::before {
-      display:none;
-  }
-  #instructions {
-      display: none;
-  }
-}
+    /* For mobile phones: */
+    @media only screen and (max-width: 968px) {
+        #instructions {
+            order: 1;
+            max-width: 100vw;
+            padding: 0 0.67em;
+        }
+        body {
+            flex-wrap: wrap;
+        }
+        page {
+            width: 100% !important;
+            height: 141.14vw !important;
+        }
+        box.add::before {
+            font-size: 7em;
+        }
+    }
+    @media print {
+        body {
+            margin: 0;
+            display: initial;
+            box-shadow: 0 0 0 0;
+            -webkit-print-color-adjust:exact !important;
+            print-color-adjust:exact !important;
+        }
+        page {
+            width: 21cm !important;
+            height: 29.7cm !important;
+        }
+        @page {
+            margin: 0;
+        }
+        box {
+            border: 0px;
+        }
+        box.add {
+            background: rgba(0, 0, 0, 0) !important;
+        }
+        box.add::before {
+            display:none;
+        }
+        #instructions {
+            display: none;
+        }
+    }
         </style>
     </head>
     <body>
         <page size="A4">
-            <inner>
-                <box></box> 
-                <box></box> 
-                <box></box> 
-                <box></box> 
-            </inner>
+        <inner>
+        <box></box>
+        <box></box>
+        <box></box>
+        <box></box>
+        </inner>
         </page>
 
         <div id="instructions">
@@ -106,7 +134,7 @@ box.add:hover {
 
             <h2>Istruzioni</h2>
             <ul>
-                <li>Al momento solo browser desktop (no smartphone) sono supportati. Chrome e Firefox sono gli unici due testati</li>
+                <li>Funziona meglio su desktop ma è utilizzabile anche da mobile. Chrome e Firefox sono gli unici due browser testati</li>
                 <li>Fai click sul "+" o trascina un'immagine (PNG, JPG, SVG) su uno dei riquadri</li>
                 <li>Aggiungi altre immagini se necessario</li>
                 <li>Stampa la pagina come faresti normalmente (oppure fai click <a onclick="window.print()" href="#">qui</a>)</li>
@@ -114,81 +142,136 @@ box.add:hover {
                 <li>Per resettare semplicemente ricarica la pagina</li>
             </ul>
 
-            <p>Nota: i documenti NON vengono caricati su nessun server, il tutto viene processato dal browser del vostro dispositivo</p>
+            <p>Nota: i documenti NON vengono caricati su nessun server, il tutto viene processato dal browser del tuo dispositivo</p>
         </div>
 
         <input type="file" style="display: none"/>
+        <canvas style="display: none;"></canvas>
 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.min.js" integrity="sha512-ml/QKfG3+Yes6TwOzQb7aCNtJF4PUyha6R3w8pSTo/VJSywl7ZreYvvtUso7fKevpsI+pYVVwnu82YO0q3V6eg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
         <script type="text/javascript">
-var input = document.querySelector('input[type=file]');
-var boxes = document.querySelectorAll('box');
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.4.120/pdf.worker.min.js';
 
-document.addEventListener('drop', (e) => e.preventDefault(), false);
+            var input = document.querySelector('input[type=file]');
+            var boxes = document.querySelectorAll('box');
 
-function setupBox(box) {
-    box.classList.add("add");
-    box.onclick = upload;
-    box.ondragover = dragOver;
-    box.ondragleave = dragLeave;
-    box.ondrop = drop;
-}
+            document.addEventListener('drop', (e) => e.preventDefault(), false);
 
-var lastSelected = null;
+            function setupBox(box) {
+                box.classList.add("add");
+                box.onclick = upload;
+                box.ondragover = dragOver;
+                box.ondragleave = dragLeave;
+                box.ondrop = drop;
+            }
 
-function upload(e) {
-    lastSelected = e.target;
+            var lastSelected = null;
 
-    input.click();
-}
+            function upload(e) {
+                lastSelected = e.target;
 
-function drop(e) {
-    e.preventDefault();
-    e.stopPropagation();
+                input.click();
+            }
 
-    setFile(e.target, e.dataTransfer.files[0]);
-}
+            function drop(e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-function dragOver(e) {
-    e.preventDefault();
-    e.stopPropagation();
+                setFile(e.target, e.dataTransfer.files[0]);
+            }
 
-    e.target.classList.add("dragOver");
-    e.dataTransfer.dropEffect = 'copy';
-}
-function dragLeave(e) {
-    e.preventDefault();
-    e.stopPropagation();
+            function dragOver(e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-    e.target.classList.remove("dragOver");
-}
+                e.target.classList.add("dragOver");
+                e.dataTransfer.dropEffect = 'copy';
+            }
+            function dragLeave(e) {
+                e.preventDefault();
+                e.stopPropagation();
 
-for (var box of boxes) {
-    setupBox(box);
-}
+                e.target.classList.remove("dragOver");
+            }
 
-function setFile(target, file) {
-    var url = URL.createObjectURL(file);
+            for (var box of boxes) {
+                setupBox(box);
+            }
 
-    if (target) {
-        target.classList.remove("add");
-        target.classList.remove("dragOver");
-        target.onclick = null;
-        target.ondrop = null;
-        target.ondragenter = null;
-        target.ondragover = null;
+            function loadPDF(file, cb) {
+                var fr = new FileReader();
+                fr.onload = (pdfData) => {
+                    console.log(pdfData);
+                    var loadingTask = pdfjsLib.getDocument({data: pdfData.target.result});
+                    loadingTask.promise.then(function(pdf) {
+                        console.log('PDF loaded');
 
-        var newDiv = document.createElement("div");
-        newDiv.style["background-image"] = "url(" + url + ")";
+                        // Fetch the first page
+                        var pageNumber = 1;
+                        pdf.getPage(pageNumber).then(function(page) {
+                            console.log('Page loaded');
 
-        target.appendChild(newDiv);
-    }
-}
+                            var scale = 1.0;
+                            var viewport = page.getViewport({scale: scale});
 
-function changeFile() {
-    setFile(lastSelected, input.files[0]);
-}
+                            // Prepare canvas using PDF page dimensions
+                            var canvas = document.querySelector('canvas');
+                            var context = canvas.getContext('2d');
+                            canvas.height = viewport.height;
+                            canvas.width = viewport.width;
 
-input.addEventListener('change', changeFile);
+                            // Render PDF page into canvas context
+                            var renderContext = {
+                                canvasContext: context,
+                                viewport: viewport
+                            };
+                            var renderTask = page.render(renderContext);
+                            renderTask.promise.then(function () {
+                                console.log('Page rendered');
+                                canvas.toBlob((blob) => {
+                                    cb(URL.createObjectURL(blob));
+                                });
+                            });
+                        });
+                    }, function (reason) {
+                        // PDF loading error
+                        console.error(reason);
+                    });
+                }
+
+                fr.readAsArrayBuffer(file);
+            }
+
+            function setFile(target, file) {
+                function cb(url) {
+                    if (target) {
+                        target.classList.remove("add");
+                        target.classList.remove("dragOver");
+                        target.onclick = null;
+                        target.ondrop = null;
+                        target.ondragenter = null;
+                        target.ondragover = null;
+
+                        var newDiv = document.createElement("div");
+                        newDiv.style["background-image"] = "url(" + url + ")";
+
+                        target.appendChild(newDiv);
+                    }
+                }
+
+                if (file.type === "application/pdf") {
+                    loadPDF(file, cb);
+                } else {
+                    var url = URL.createObjectURL(file);
+                    cb(url);
+                }
+            }
+
+            function changeFile() {
+                setFile(lastSelected, input.files[0]);
+            }
+
+            input.addEventListener('change', changeFile);
         </script>
     </body>
 </html>
