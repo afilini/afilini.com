@@ -1,0 +1,194 @@
+<html>
+    <head>
+        <title>Stampa Etichette</title>
+        <style type="text/css">
+body {
+  background: rgb(204,204,204);
+  display: flex;
+  justify-content: space-evenly;
+}
+page {
+  background: white;
+  display: block;
+  box-shadow: 0 0 0.5cm rgba(0,0,0,0.5);
+}
+page[size="A4"] {
+  width: 21cm;
+  height: 29.7cm;
+}
+inner {
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: start;
+    padding-top: 0.9cm;
+}
+box {
+    display: inline-block;
+    width: 9.91cm;
+    height: 13.9cm;
+    border: 1px solid black;
+    border-radius: 0.3cm;
+    padding: 0.3cm;
+    box-sizing: border-box;
+}
+box > div {
+    width: 100%;
+    height: 100%;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+box:nth-child(even) {
+    margin-left: 0.2cm;
+}
+box.add {
+    background-color: rgb(222, 222, 222);
+}
+box.dragover {
+    border: 5px dashed;
+}
+box.add::before {
+    content: '+';
+    width: 100%;
+    height: 100%;
+    display: flex;
+    font-size: 10em;
+    justify-content: center;
+    align-items: center;
+}
+box.add:hover {
+    cursor: pointer;
+}
+#instructions {
+    max-width: 25vw;
+}
+@media print {
+  body {
+    margin: 0;
+    display: initial;
+    box-shadow: 0 0 0 0;
+    -webkit-print-color-adjust:exact !important;
+    print-color-adjust:exact !important;
+  }
+  @page {
+      margin: 0;
+  }
+  box {
+      border: 0px;
+  }
+  box.add {
+      background: rgba(0, 0, 0, 0) !important;
+  }
+  box.add::before {
+      display:none;
+  }
+  #instructions {
+      display: none;
+  }
+}
+        </style>
+    </head>
+    <body>
+        <page size="A4">
+            <inner>
+                <box></box> 
+                <box></box> 
+                <box></box> 
+                <box></box> 
+            </inner>
+        </page>
+
+        <div id="instructions">
+            <h1 style="margin-bottom: 0;">Stampa Etichette</h1>
+            <p style="margin-top: 0;">By <a href="https://twitter.com/afilini" target="_blank" rel="noreferrer">@afilini</a></p>
+
+            <h2>Istruzioni</h2>
+            <ul>
+                <li>Al momento solo browser desktop (no smartphone) sono supportati. Chrome e Firefox sono gli unici due testati</li>
+                <li>Fai click sul "+" o trascina un'immagine (PNG, JPG, SVG) su uno dei riquadri</li>
+                <li>Aggiungi altre immagini se necessario</li>
+                <li>Stampa la pagina come faresti normalmente (oppure fai click <a onclick="window.print()" href="#">qui</a>)</li>
+                <li>Assicurati che il formato di stampa sia A4 e che le etichette siano della dimensione corretta (<a href="https://www.amazon.it/dp/B07DM7X5Y7" target="_blank" rel="noreferrer">qui</a> trovi quelle consigliate di Amazon Basics)</li>
+                <li>Per resettare semplicemente ricarica la pagina</li>
+            </ul>
+
+            <p>Nota: i documenti NON vengono caricati su nessun server, il tutto viene processato dal browser del vostro dispositivo</p>
+        </div>
+
+        <input type="file" style="display: none"/>
+
+        <script type="text/javascript">
+var input = document.querySelector('input[type=file]');
+var boxes = document.querySelectorAll('box');
+
+document.addEventListener('drop', (e) => e.preventDefault(), false);
+
+function setupBox(box) {
+    box.classList.add("add");
+    box.onclick = upload;
+    box.ondragover = dragOver;
+    box.ondragleave = dragLeave;
+    box.ondrop = drop;
+}
+
+var lastSelected = null;
+
+function upload(e) {
+    lastSelected = e.target;
+
+    input.click();
+}
+
+function drop(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setFile(e.target, e.dataTransfer.files[0]);
+}
+
+function dragOver(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    e.target.classList.add("dragOver");
+    e.dataTransfer.dropEffect = 'copy';
+}
+function dragLeave(e) {
+    e.preventDefault();
+    e.stopPropagation();
+
+    e.target.classList.remove("dragOver");
+}
+
+for (var box of boxes) {
+    setupBox(box);
+}
+
+function setFile(target, file) {
+    var url = URL.createObjectURL(file);
+
+    if (target) {
+        target.classList.remove("add");
+        target.classList.remove("dragOver");
+        target.onclick = null;
+        target.ondrop = null;
+        target.ondragenter = null;
+        target.ondragover = null;
+
+        var newDiv = document.createElement("div");
+        newDiv.style["background-image"] = "url(" + url + ")";
+
+        target.appendChild(newDiv);
+    }
+}
+
+function changeFile() {
+    setFile(lastSelected, input.files[0]);
+}
+
+input.addEventListener('change', changeFile);
+        </script>
+    </body>
+</html>
